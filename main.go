@@ -57,24 +57,30 @@ func newPool() *redis.Pool {
 
 func regisiter() {
 
+	// get self ip
+	tk := time.NewTicker(13 * time.Second)
+	for {
+		set(ProjectName, registerIp)
+		<-tk.C
+	}
+}
+
+func set(pn, ip string) {
 	// connection redis
 	c := pool.Get()
 	defer c.Close()
 
-	// get project name
-	// get self ip
-	tk := time.NewTicker(13 * time.Second)
-
-	for {
-		// ttl 15 second
-		if _, err := c.Do("SET", ProjectName, registerIp, "EX", 15); err != nil {
-			log.Println(err, " [set/ttl failed] ", ProjectName)
-		}
-		if ProjectName == "project_name_undefined" {
-			log.Println("project name: ", ProjectName)
-		}
-		<-tk.C
-		// set ttl
+	if _, err := c.Do("SELECT", 7); err != nil {
+		log.Println(err, " [redis select failed] ", pn)
+		return
+	}
+	// ttl 15 second
+	if _, err := c.Do("SET", pn, ip, "EX", 15); err != nil {
+		log.Println(err, " [set/ttl failed] ", pn)
+		return
+	}
+	if pn == "project_name_undefined" {
+		log.Println("project name: ", pn)
 	}
 }
 
