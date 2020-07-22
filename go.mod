@@ -1,4 +1,4 @@
-module servlist
+module github.com/byronzr/servlist
 
 go 1.14
 
