@@ -94,3 +94,7 @@ func Get(pn string) (string, error) {
 	}
 	return s, nil
 }
+
+func Start() {
+	fmt.Println("Auto Register Sevelist >>> ", ProjectName, " <<<")
+}
