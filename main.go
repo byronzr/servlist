@@ -66,6 +66,14 @@ func regisiter() {
 }
 
 func set(pn, ip string) {
+
+	// 以防万一
+	defer func() {
+		if e := recover(); e != nil {
+			log.Println("recover: ", e)
+		}
+	}()
+
 	// connection redis
 	c := pool.Get()
 	defer c.Close()
